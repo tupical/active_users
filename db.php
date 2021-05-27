@@ -2,6 +2,8 @@
 function get_cnt($last_action,$db){
     $result = $db->query("SELECT count(*) as cnt FROM activities WHERE last_action > '".$last_action."'");
     $row = $result->fetch();
+    $deads = $last_action*30*60;
+    $db->query("DELETE FROM activities WHERE last_action > '".$deads."'");
     return $row;
 }
 
