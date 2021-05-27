@@ -17,14 +17,18 @@ print_r(time());
 Онлайн пользователей: <span class="online_cnt"></span>
 
 <script>
-fetch('timer.php').then(response => (
-    response.json().then(data => ({
-        data: data,
-        status: response.status
-    })
-    )
-).then(res => {
-    document.querySelector('.online_cnt').textContent = res.data.cnt;
-    console.log(res.status)
-}));
+function timer(){
+    fetch('timer.php').then(response => (
+        response.json().then(data => ({
+            data: data,
+            status: response.status
+        })
+        )
+    ).then(res => {
+        document.querySelector('.online_cnt').textContent = res.data.cnt;
+        console.log(res.status)
+    }));
+}
+
+let timerId = setInterval(() => timer(), 1000);
 </script>
