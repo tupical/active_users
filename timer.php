@@ -11,17 +11,15 @@ class Users {
     protected $db;
     public $json;
 
-    public function __construct($sessid,$db)
+    public function __construct($sessid,$online_lifetime,$db)
     {
         $this->cache_file = "./cnt.json";
         $this->db = $db;
-        $this->timer = time()-30;
-        if($_GET['action']!='update')
-            $this->check_user($sessid);
+        $this->timer = time()-$online_lifetime;
     }
 
     public function get_online() {  
-        if($row = $this->get_cache()){
+        if(($row = $this->get_cache())){
             $data = json_encode($row);
         }else{
             $row = get_cnt($this->timer,$this->db);
@@ -32,8 +30,24 @@ class Users {
         return $data;
     }
 
+    public function add_user() {
+        $id = add_activity($this->generateRandomString(),time(),$this->db);
+        return json_encode(['id'=>$id]);
+    } 
+
+    private function generateRandomString($length = 10) {
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $charactersLength = strlen($characters);
+        $randomString = '';
+        for ($i = 0; $i < $length; $i++) {
+            $randomString .= $characters[rand(0, $charactersLength - 1)];
+        }
+        return $randomString;
+    }
+
     public function check_user() {
-        add_activity(session_id(),time(),$this->db);
+        $id = add_activity(session_id(),time(),$this->db);
+        return json_encode(['id'=>$id]);
     }
  
     private function get_cache() {
@@ -54,6 +68,17 @@ class Users {
 } 
 
 
-$users = new Users(session_id(),$db);
-echo $users->get_online();
+$users = new Users(session_id(),30,$db);
+switch($_GET['action']){
+    case 'init':
+        echo $users->check_user();
+    break;
+    case 'update':
+        echo $users->get_online();
+    break;
+    case 'addUser':
+        echo $users->add_user();
+    break;
+}
+
 ?>

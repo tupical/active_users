@@ -8,5 +8,6 @@ function get_cnt($last_action,$db){
 }
 
 function add_activity($sessid,$last_action,$db){
-    $db->query("REPLACE INTO activities(sessid,last_action) VALUES ('".$sessid."','".$last_action."')");
+    $result = $db->query("INSERT INTO activities(`sessid`,`last_action`) VALUES('".$sessid."','".$last_action."') ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), `last_action` = '".$last_action."'");
+    return $db->lastInsertId();
 }
