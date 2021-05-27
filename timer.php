@@ -16,7 +16,8 @@ class Users {
         $this->cache_file = "./cnt.json";
         $this->db = $db;
         $this->timer = time()-30;
-        $this->check_user($sessid);
+        if($_GET['action']!='update')
+            $this->check_user($sessid);
     }
 
     public function get_online() {  

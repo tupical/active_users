@@ -2,8 +2,8 @@
 Онлайн пользователей: <span class="online_cnt"></span>
 
 <script>
-function timer(){
-    fetch('timer.php').then(response => (
+function timer(action){
+    fetch('timer.php?action='+action).then(response => (
         response.json().then(data => ({
             data: data,
             status: response.status
@@ -14,6 +14,6 @@ function timer(){
         console.log(res.status)
     }));
 }
-timer();
-setInterval(() => timer(), 1000);
+timer('init');
+setInterval(() => timer('update'), 1000);
 </script>
